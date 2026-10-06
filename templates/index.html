@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TripPilot AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+    <script>
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem("tp-theme");
+        } catch (e) {}
+        if (!t)
+          t = matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="routes" aria-hidden="true">
+      <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice">
+        <path d="M-20 420 Q 300 40 620 260 T 1240 120" />
+        <path d="M-20 520 Q 400 200 760 380 T 1240 300" />
+      </svg>
+    </div>
+
+    <main class="wrap">
+      <header>
+        <div class="logo"><i>✈</i>TripPilot AI</div>
+        <div class="head-right">
+          <span class="pill" id="statusPill"
+            ><span class="dot"></span
+            ><span id="statusTxt">Checking…</span></span
+          >
+          <button
+            class="switch"
+            id="themeBtn"
+            aria-label="Toggle dark or light mode"
+          >
+            <span id="themeIcon">🌙</span><span id="themeTxt">Dark</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="hero" id="hero">
+        <h1>Tell us where. We'll plan the rest.</h1>
+        <p>
+          Describe your trip in one sentence. Our agents search flights, find
+          hotels and build your day-by-day itinerary.
+        </p>
+
+        <div class="searchbox">
+          <textarea
+            id="userInput"
+            rows="1"
+            placeholder="Plan a complete 7 days Japan trip from India under 2 lakhs."
+            aria-label="Describe your trip"
+          ></textarea>
+          <button class="go" id="sendBtn">Plan trip</button>
+        </div>
+        <p class="hint">Press Enter to search. Shift+Enter adds a new line.</p>
+
+        <div class="chips">
+          <button
+            class="chip"
+            data-prompt="Plan a complete 7 days Japan trip from India including flights, hotels and sightseeing under 2 lakhs."
+          >
+            Japan, 7 days
+          </button>
+          <button
+            class="chip"
+            data-prompt="Plan a 5 days Dubai trip from India with flights, hotels and sightseeing."
+          >
+            Dubai, 5 days
+          </button>
+          <button
+            class="chip"
+            data-prompt="Plan a 7 days Thailand trip from India with budget hotels and sightseeing."
+          >
+            Thailand, 7 days
+          </button>
+          <button class="chip" data-prompt="Give me all country flight info.">
+            Global flights
+          </button>
+        </div>
+      </section>
+
+      <section id="loading" class="loading hidden" aria-live="polite">
+        <div class="sky">
+          <svg viewBox="0 0 600 130" preserveAspectRatio="none">
+            <path d="M20 110 Q 300 -40 580 110" />
+          </svg>
+          <div class="plane">✈</div>
+          <span class="city a" id="fromCity">Origin</span>
+          <span class="city b" id="toCity">Destination</span>
+        </div>
+        <div class="agents" id="agents"></div>
+        <p class="status" id="statusMsg"></p>
+        <p class="timer" id="timer">0s</p>
+      </section>
+
+      <section id="errorBox" class="error hidden" role="alert"></section>
+
+      <section id="resultSection" class="result hidden">
+        <div class="toolbar">
+          <div>
+            <h2>Your AI Travel Plan</h2>
+            <p class="meta" id="threadInfo"></p>
+          </div>
+          <div class="btns">
+            <button class="btn" id="copyBtn">Copy</button>
+            <button class="btn pri" id="pdfBtn">Download PDF</button>
+          </div>
+        </div>
+
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="plan" role="tab">
+            Full plan
+          </button>
+          <button class="tab" data-tab="flights" role="tab">Flights</button>
+          <button class="tab" data-tab="hotels" role="tab">Hotels</button>
+          <button class="tab" data-tab="itinerary" role="tab">Itinerary</button>
+        </div>
+
+        <div class="panel md" id="p-plan"></div>
+        <div class="panel hidden" id="p-flights"></div>
+        <div class="panel hidden" id="p-hotels"></div>
+        <div class="panel md hidden" id="p-itinerary"></div>
+      </section>
+    </main>
+
+    <footer>
+      Built with FastAPI, LangGraph, Groq, PostgreSQL, Tavily and AviationStack
+    </footer>
+    <div class="toast" id="toast" role="status"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+  </body>
+</html>
